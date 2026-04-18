@@ -10,4 +10,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EnterpriseWorkManagementSystem.Application\EnterpriseWorkManagementSystem.Application.csproj" />
+    <ProjectReference Include="..\EnterpriseWorkManagementSystem.Infrastructure\EnterpriseWorkManagementSystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\EnterpriseWorkManagementSystem.Persistence\EnterpriseWorkManagementSystem.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

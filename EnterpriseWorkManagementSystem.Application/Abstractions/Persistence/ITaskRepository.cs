@@ -7,12 +7,8 @@ using System.Threading.Tasks;
 
 namespace EnterpriseWorkManagementSystem.Application.Abstractions.Persistence
 {
-    public interface ITaskRepository
+    public interface ITaskRepository : IGenericRepository<TaskItem>
     {
-        Task<TaskItem?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<TaskItem>> GetAllAsync(CancellationToken cancellationToken = default);
-        Task AddAsync(TaskItem taskItem, CancellationToken cancellationToken = default);
-        void Update(TaskItem taskItem);
-        void Delete(TaskItem taskItem);
+        Task<IReadOnlyList<TaskItem>> GetTasksWithCategoryAsync(CancellationToken cancellationToken = default);
     }
 }

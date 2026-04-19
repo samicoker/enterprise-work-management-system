@@ -10,4 +10,10 @@
     <ProjectReference Include="..\EnterpriseWorkManagementSystem.Domain\EnterpriseWorkManagementSystem.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Interfaces\" />
+    <Folder Include="Features\Tasks\Commands\" />
+    <Folder Include="Features\Tasks\Queries\" />
+  </ItemGroup>
+
 </Project>

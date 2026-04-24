@@ -13,7 +13,10 @@ namespace EnterpriseWorkManagementSystem.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+          
+            services.AddAutoMapper(cfg =>
+            {
+            }, Assembly.GetExecutingAssembly());
 
             return services;
         }

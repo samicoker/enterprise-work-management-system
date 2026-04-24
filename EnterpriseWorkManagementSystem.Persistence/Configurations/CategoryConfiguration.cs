@@ -20,6 +20,12 @@ namespace EnterpriseWorkManagementSystem.Persistence.Configurations
             builder.Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.HasData(
+    new Category { Id = 1, Name = "Work" },
+    new Category { Id = 2, Name = "Bug" },
+    new Category { Id = 3, Name = "Feature" }
+);
         }
     }
 }

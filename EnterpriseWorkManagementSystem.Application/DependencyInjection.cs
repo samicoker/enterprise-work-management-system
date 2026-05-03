@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EnterpriseWorkManagementSystem.Application.Common.Behaviors;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +14,16 @@ namespace EnterpriseWorkManagementSystem.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-          
+            var assembly = Assembly.GetExecutingAssembly();
+
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(assembly);
+                cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            });
+
+            services.AddValidatorsFromAssembly(assembly);
+
             services.AddAutoMapper(cfg =>
             {
             }, Assembly.GetExecutingAssembly());

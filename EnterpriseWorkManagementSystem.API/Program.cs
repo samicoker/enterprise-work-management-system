@@ -1,5 +1,7 @@
 using EnterpriseWorkManagementSystem.Application;
 using EnterpriseWorkManagementSystem.Persistence;
+using EnterpriseWorkManagementSystem.Persistence.Context;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,13 @@ builder.Services.AddApplication();
 builder.Services.AddPersistence(builder.Configuration);
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

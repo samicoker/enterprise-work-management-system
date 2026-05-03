@@ -1,4 +1,5 @@
 ﻿using EnterpriseWorkManagementSystem.Application.Common.Models;
+using EnterpriseWorkManagementSystem.Domain.Exceptions;
 using FluentValidation;
 using System.Net;
 using System.Text.Json;
@@ -45,7 +46,7 @@ namespace EnterpriseWorkManagementSystem.API.Middlewares
             var statusCode = exception switch
             {
                 ValidationException => (int)HttpStatusCode.BadRequest,
-                KeyNotFoundException => (int)HttpStatusCode.NotFound,
+                BaseException baseEx => baseEx.StatusCode,
                 _ => (int)HttpStatusCode.InternalServerError
             };
 

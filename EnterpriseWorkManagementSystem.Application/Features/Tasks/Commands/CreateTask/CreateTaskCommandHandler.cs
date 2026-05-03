@@ -2,6 +2,7 @@
 using EnterpriseWorkManagementSystem.Application.Common.Models;
 using EnterpriseWorkManagementSystem.Domain.Entities;
 using EnterpriseWorkManagementSystem.Domain.Enums;
+using EnterpriseWorkManagementSystem.Domain.Exceptions;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Commands.Cre
 
             if (category is null)
             {
-                return Result<int>.Failure("Category not found.");
+                throw new NotFoundException("Category not found.");
             }
 
             var taskItem = new TaskItem

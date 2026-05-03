@@ -19,5 +19,26 @@ namespace EnterpriseWorkManagementSystem.Persistence.Repositories.Concrete
                 .Include(x => x.Category)
                 .ToListAsync(cancellationToken);
         }
+
+        public async Task<(IReadOnlyList<TaskItem> Items, int TotalCount)> GetPagedTasksWithCategoryAsync(
+    int pageNumber,
+    int pageSize,
+    CancellationToken cancellationToken = default)
+        {
+            var query = _context.Tasks
+                .Include(x => x.Category)
+                .AsNoTracking()
+                .OrderByDescending(x => x.CreatedDate)
+                .AsQueryable();
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+
+            return (items, totalCount);
+        }
     }
 }

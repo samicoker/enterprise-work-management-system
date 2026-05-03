@@ -17,10 +17,32 @@ namespace EnterpriseWorkManagementSystem.API.Controllers
             _mediator = mediator;
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        //{
+        //    var result = await _mediator.Send(new GetAllTasksQuery(), cancellationToken);
+
+        //    if (!result.IsSuccess)
+        //    {
+        //        return BadRequest(result);
+        //    }
+
+        //    return Ok(result);
+        //}
+
         [HttpGet]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll(
+    [FromQuery] int pageNumber = 1,
+    [FromQuery] int pageSize = 10,
+    CancellationToken cancellationToken = default)
         {
-            var result = await _mediator.Send(new GetAllTasksQuery(), cancellationToken);
+            var query = new GetAllTasksQuery
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+            var result = await _mediator.Send(query, cancellationToken);
 
             if (!result.IsSuccess)
             {

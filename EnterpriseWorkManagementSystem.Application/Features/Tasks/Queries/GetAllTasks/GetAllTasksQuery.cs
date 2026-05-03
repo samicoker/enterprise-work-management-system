@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Queries.GetAllTasks
 {
-    public class GetAllTasksQuery : IRequest<Result<IReadOnlyList<TaskDto>>>
+    public class GetAllTasksQuery : IRequest<Result<PagedResult<TaskDto>>>
     {
-
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
     }
 }

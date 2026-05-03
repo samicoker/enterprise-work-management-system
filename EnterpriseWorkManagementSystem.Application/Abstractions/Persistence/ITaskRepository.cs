@@ -10,5 +10,6 @@ namespace EnterpriseWorkManagementSystem.Application.Abstractions.Persistence
     public interface ITaskRepository : IGenericRepository<TaskItem>
     {
         Task<IReadOnlyList<TaskItem>> GetTasksWithCategoryAsync(CancellationToken cancellationToken = default);
+        Task<(IReadOnlyList<TaskItem> Items, int TotalCount)> GetPagedTasksWithCategoryAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
     }
 }

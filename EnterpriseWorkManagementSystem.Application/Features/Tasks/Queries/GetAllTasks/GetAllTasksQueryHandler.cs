@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Queries.GetAllTasks
 {
-    public class GetAllTasksQueryHandler : IRequestHandler<GetAllTasksQuery, Result<IReadOnlyList<TaskDto>>>
+    public class GetAllTasksQueryHandler : IRequestHandler<GetAllTasksQuery, Result<PagedResult<TaskDto>>>
     {
         private readonly ITaskRepository _taskRepository;
         private readonly IMapper _mapper;
@@ -22,25 +22,53 @@ namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Queries.GetA
             _mapper = mapper;
         }
 
-        public async Task<Result<IReadOnlyList<TaskDto>>> Handle(GetAllTasksQuery request, CancellationToken cancellationToken)
+        //public async Task<Result<IReadOnlyList<TaskDto>>> Handle(GetAllTasksQuery request, CancellationToken cancellationToken)
+        //{
+        //    var tasks = await _taskRepository.GetTasksWithCategoryAsync(cancellationToken);
+
+        //    //var taskDtos = tasks.Select(task => new TaskDto
+        //    //{
+        //    //    Id = task.Id,
+        //    //    Title = task.Title,
+        //    //    Description = task.Description,
+        //    //    DueDate = task.DueDate,
+        //    //    Status = task.Status,
+        //    //    Priority = task.Priority,
+        //    //    CategoryId = task.CategoryId,
+        //    //    CategoryName = task.Category?.Name ?? string.Empty
+        //    //}).ToList();
+
+        //    var taskDtos =_mapper.Map<IReadOnlyList<TaskDto>>(tasks);
+
+        //    return Result<IReadOnlyList<TaskDto>>.Success(taskDtos, "Tasks fetched successfully.");
+        //}
+        public async Task<Result<PagedResult<TaskDto>>> Handle(GetAllTasksQuery request, CancellationToken cancellationToken)
         {
-            var tasks = await _taskRepository.GetTasksWithCategoryAsync(cancellationToken);
+            if (request.PageNumber < 1)
+                request.PageNumber = 1;
 
-            //var taskDtos = tasks.Select(task => new TaskDto
-            //{
-            //    Id = task.Id,
-            //    Title = task.Title,
-            //    Description = task.Description,
-            //    DueDate = task.DueDate,
-            //    Status = task.Status,
-            //    Priority = task.Priority,
-            //    CategoryId = task.CategoryId,
-            //    CategoryName = task.Category?.Name ?? string.Empty
-            //}).ToList();
+            if (request.PageSize < 1)
+                request.PageSize = 10;
 
-            var taskDtos =_mapper.Map<IReadOnlyList<TaskDto>>(tasks);
+            if (request.PageSize > 50)
+                request.PageSize = 50;
 
-            return Result<IReadOnlyList<TaskDto>>.Success(taskDtos, "Tasks fetched successfully.");
+            var (items, totalCount) = await _taskRepository.GetPagedTasksWithCategoryAsync(
+                request.PageNumber,
+                request.PageSize,
+                cancellationToken);
+
+            var taskDtos = _mapper.Map<IReadOnlyList<TaskDto>>(items);
+
+            var pagedResult = new PagedResult<TaskDto>
+            {
+                Items = taskDtos,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize,
+                TotalCount = totalCount
+            };
+
+            return Result<PagedResult<TaskDto>>.Success(pagedResult, "Tasks fetched successfully.");
         }
     }
 }

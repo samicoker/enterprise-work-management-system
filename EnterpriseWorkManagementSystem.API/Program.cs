@@ -1,3 +1,4 @@
+using EnterpriseWorkManagementSystem.API.Middlewares;
 using EnterpriseWorkManagementSystem.Application;
 using EnterpriseWorkManagementSystem.Persistence;
 using EnterpriseWorkManagementSystem.Persistence.Context;
@@ -32,6 +33,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseAuthorization();
 

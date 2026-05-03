@@ -8,10 +8,17 @@ namespace EnterpriseWorkManagementSystem.API.Middlewares
     public class GlobalExceptionMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<GlobalExceptionMiddleware> _logger;
+        private readonly IWebHostEnvironment _environment;
 
-        public GlobalExceptionMiddleware(RequestDelegate next)
+        public GlobalExceptionMiddleware(
+            RequestDelegate next,
+            ILogger<GlobalExceptionMiddleware> logger,
+            IWebHostEnvironment environment)
         {
             _next = next;
+            _logger = logger;
+            _environment = environment;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -22,36 +29,41 @@ namespace EnterpriseWorkManagementSystem.API.Middlewares
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context, ex);
+                _logger.LogError(ex, "An unhandled exception occurred. Path: {Path}", context.Request.Path);
+
+                await HandleExceptionAsync(context, ex, _environment);
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private static Task HandleExceptionAsync(
+            HttpContext context,
+            Exception exception,
+            IWebHostEnvironment environment)
         {
             context.Response.ContentType = "application/json";
 
-            var response = new Result
+            var statusCode = exception switch
             {
-                IsSuccess = false,
-                Message = exception.Message
+                ValidationException => (int)HttpStatusCode.BadRequest,
+                KeyNotFoundException => (int)HttpStatusCode.NotFound,
+                _ => (int)HttpStatusCode.InternalServerError
             };
 
-            switch (exception)
+            context.Response.StatusCode = statusCode;
+
+            var response = new
             {
-                case ValidationException:
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    break;
+                isSuccess = false,
+                statusCode,
+                exceptionType = exception.GetType().Name,
+                message = exception.Message,
+                stackTrace = environment.IsDevelopment() ? exception.StackTrace : null
+            };
 
-                case KeyNotFoundException:
-                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    break;
-
-                default:
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    break;
-            }
-
-            var json = JsonSerializer.Serialize(response);
+            var json = JsonSerializer.Serialize(response, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
 
             return context.Response.WriteAsync(json);
         }

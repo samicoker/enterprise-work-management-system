@@ -36,3 +36,6 @@ publish/
 # Node (ileride frontend için)
 node_modules/
 dist/
+
+# Serilog
+**/Logs/

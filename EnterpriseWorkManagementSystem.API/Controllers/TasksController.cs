@@ -1,6 +1,7 @@
 ﻿using EnterpriseWorkManagementSystem.Application.Features.Tasks.Commands.CreateTask;
 using EnterpriseWorkManagementSystem.Application.Features.Tasks.Queries.GetAllTasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace EnterpriseWorkManagementSystem.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class TasksController : ControllerBase
     {
         private readonly IMediator _mediator;

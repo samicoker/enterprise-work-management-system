@@ -1,4 +1,5 @@
-﻿using EnterpriseWorkManagementSystem.Application.Abstractions.Persistence;
+﻿using EnterpriseWorkManagementSystem.Application.Abstractions.Infrastructure;
+using EnterpriseWorkManagementSystem.Application.Abstractions.Persistence;
 using EnterpriseWorkManagementSystem.Application.Common.Models;
 using EnterpriseWorkManagementSystem.Domain.Entities;
 using EnterpriseWorkManagementSystem.Domain.Enums;
@@ -18,15 +19,17 @@ namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Commands.Cre
         private readonly ITaskRepository _taskRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUnitOfWork _unitOfWork;
-
+        private readonly ICurrentUserService _currentUserService;
         public CreateTaskCommandHandler(
             ITaskRepository taskRepository,
             ICategoryRepository categoryRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ICurrentUserService currentUserService)
         {
             _taskRepository = taskRepository;
             _categoryRepository = categoryRepository;
             _unitOfWork = unitOfWork;
+            _currentUserService = currentUserService;
         }
 
         public async Task<Result<int>> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
@@ -45,7 +48,8 @@ namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Commands.Cre
                 DueDate = request.DueDate,
                 CategoryId = request.CategoryId,
                 Status = TaskStatus.Pending,
-                Priority = TaskPriority.Medium
+                Priority = TaskPriority.Medium,
+                CreatedByUserId = _currentUserService.UserId
             };
 
             await _taskRepository.AddAsync(taskItem, cancellationToken);

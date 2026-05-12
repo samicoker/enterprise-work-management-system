@@ -13,7 +13,7 @@ namespace EnterpriseWorkManagementSystem.Domain.Entities
 
         public TaskStatus Status { get; set; } = TaskStatus.Pending;
         public TaskPriority Priority { get; set; } = TaskPriority.Medium;
-
+        public string? CreatedByUserId { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
     }

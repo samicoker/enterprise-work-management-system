@@ -15,7 +15,7 @@ namespace EnterpriseWorkManagementSystem.Persistence.Repositories.Concrete
 
         public async Task<IReadOnlyList<TaskItem>> GetTasksWithCategoryAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.Tasks
+            return await _context.Tasks.Where(x=>!x.IsDeleted)
                 .Include(x => x.Category)
                 .ToListAsync(cancellationToken);
         }
@@ -25,7 +25,7 @@ namespace EnterpriseWorkManagementSystem.Persistence.Repositories.Concrete
     int pageSize,
     CancellationToken cancellationToken = default)
         {
-            var query = _context.Tasks
+            var query = _context.Tasks.Where(x=>!x.IsDeleted)
                 .Include(x => x.Category)
                 .AsNoTracking()
                 .OrderByDescending(x => x.CreatedDate)

@@ -1,5 +1,6 @@
 ﻿using EnterpriseWorkManagementSystem.Application.Features.Tasks.Commands.CreateTask;
 using EnterpriseWorkManagementSystem.Application.Features.Tasks.Commands.DeleteTask;
+using EnterpriseWorkManagementSystem.Application.Features.Tasks.Commands.UpdateTask;
 using EnterpriseWorkManagementSystem.Application.Features.Tasks.Queries.GetAllTasks;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -73,6 +74,17 @@ namespace EnterpriseWorkManagementSystem.API.Controllers
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new DeleteTaskCommand { Id = id }, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateTaskCommand command, CancellationToken cancellationToken)
+        {
+            command.Id = id;
+
+            var result = await _mediator.Send(command, cancellationToken);
 
             return Ok(result);
         }

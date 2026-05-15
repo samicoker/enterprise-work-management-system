@@ -15,7 +15,7 @@ namespace EnterpriseWorkManagementSystem.Persistence.Repositories.Concrete
 
         public async Task<IReadOnlyList<TaskItem>> GetTasksWithCategoryAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.Tasks.Where(x=>!x.IsDeleted)
+            return await _context.Tasks.Where(x => !x.IsDeleted)
                 .Include(x => x.Category)
                 .ToListAsync(cancellationToken);
         }
@@ -27,15 +27,17 @@ namespace EnterpriseWorkManagementSystem.Persistence.Repositories.Concrete
     bool isAdmin,
     CancellationToken cancellationToken = default)
         {
-            var query = _context.Tasks.Where(x=>!x.IsDeleted)
+            var query = _context.Tasks.Where(x => !x.IsDeleted)
                 .Include(x => x.Category)
+                .Include(x => x.Assignments)
                 .AsNoTracking()
                 .OrderByDescending(x => x.CreatedDate)
                 .AsQueryable();
 
             if (!isAdmin)
             {
-                query = query.Where(x => x.CreatedByUserId == userId);
+                query = query.Where(x => x.CreatedByUserId == userId ||
+            x.Assignments.Any(a => a.UserId == userId));
             }
 
             query = query.OrderByDescending(x => x.CreatedDate);
@@ -48,6 +50,14 @@ namespace EnterpriseWorkManagementSystem.Persistence.Repositories.Concrete
                 .ToListAsync(cancellationToken);
 
             return (items, totalCount);
+        }
+
+        public async Task<TaskItem?> GetTaskWithDetailsByIdAsync(int id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Tasks
+                .Include(x => x.Category)
+                .Include(x => x.Assignments)
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
     }
 }

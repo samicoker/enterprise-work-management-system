@@ -56,11 +56,6 @@ namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Queries.GetA
             if (request.PageSize > 50)
                 request.PageSize = 50;
 
-            //var (items, totalCount) = await _taskRepository.GetPagedTasksWithCategoryAsync(
-            //    request.PageNumber,
-            //    request.PageSize,
-            //    cancellationToken);
-
             var userId = _currentUserService.UserId;
             var isAdmin = _currentUserService.IsInRole("Admin");
 

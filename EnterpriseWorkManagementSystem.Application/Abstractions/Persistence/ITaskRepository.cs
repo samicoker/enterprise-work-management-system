@@ -14,5 +14,7 @@ namespace EnterpriseWorkManagementSystem.Application.Abstractions.Persistence
         string? userId,
         bool isAdmin, 
         CancellationToken cancellationToken = default);
+
+        Task<TaskItem?> GetTaskWithDetailsByIdAsync(int id, CancellationToken cancellationToken = default);
     }
 }

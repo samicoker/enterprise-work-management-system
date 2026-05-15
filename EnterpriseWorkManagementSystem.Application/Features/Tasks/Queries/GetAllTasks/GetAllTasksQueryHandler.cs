@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EnterpriseWorkManagementSystem.Application.Abstractions.Infrastructure;
 using EnterpriseWorkManagementSystem.Application.Abstractions.Persistence;
 using EnterpriseWorkManagementSystem.Application.Common.Models;
 using EnterpriseWorkManagementSystem.Application.DTOs.Task;
@@ -15,11 +16,13 @@ namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Queries.GetA
     {
         private readonly ITaskRepository _taskRepository;
         private readonly IMapper _mapper;
+        private readonly ICurrentUserService _currentUserService;
 
-        public GetAllTasksQueryHandler(ITaskRepository taskRepository, IMapper mapper)
+        public GetAllTasksQueryHandler(ITaskRepository taskRepository, IMapper mapper, ICurrentUserService currentUserService)
         {
             _taskRepository = taskRepository;
             _mapper = mapper;
+            _currentUserService = currentUserService;
         }
 
         //public async Task<Result<IReadOnlyList<TaskDto>>> Handle(GetAllTasksQuery request, CancellationToken cancellationToken)
@@ -53,9 +56,19 @@ namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Queries.GetA
             if (request.PageSize > 50)
                 request.PageSize = 50;
 
+            //var (items, totalCount) = await _taskRepository.GetPagedTasksWithCategoryAsync(
+            //    request.PageNumber,
+            //    request.PageSize,
+            //    cancellationToken);
+
+            var userId = _currentUserService.UserId;
+            var isAdmin = _currentUserService.IsInRole("Admin");
+
             var (items, totalCount) = await _taskRepository.GetPagedTasksWithCategoryAsync(
                 request.PageNumber,
                 request.PageSize,
+                userId,
+                isAdmin,
                 cancellationToken);
 
             var taskDtos = _mapper.Map<IReadOnlyList<TaskDto>>(items);

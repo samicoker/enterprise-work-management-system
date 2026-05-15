@@ -14,5 +14,6 @@ namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Commands.Cre
         public string Description { get; set; } = string.Empty;
         public DateTime DueDate { get; set; }
         public int CategoryId { get; set; }
+        public List<string> AssignedUserIds { get; set; } = new();
     }
 }

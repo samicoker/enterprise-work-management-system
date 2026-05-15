@@ -23,6 +23,8 @@ namespace EnterpriseWorkManagementSystem.Persistence.Repositories.Concrete
         public async Task<(IReadOnlyList<TaskItem> Items, int TotalCount)> GetPagedTasksWithCategoryAsync(
     int pageNumber,
     int pageSize,
+    string? userId,
+    bool isAdmin,
     CancellationToken cancellationToken = default)
         {
             var query = _context.Tasks.Where(x=>!x.IsDeleted)
@@ -30,6 +32,13 @@ namespace EnterpriseWorkManagementSystem.Persistence.Repositories.Concrete
                 .AsNoTracking()
                 .OrderByDescending(x => x.CreatedDate)
                 .AsQueryable();
+
+            if (!isAdmin)
+            {
+                query = query.Where(x => x.CreatedByUserId == userId);
+            }
+
+            query = query.OrderByDescending(x => x.CreatedDate);
 
             var totalCount = await query.CountAsync(cancellationToken);
 

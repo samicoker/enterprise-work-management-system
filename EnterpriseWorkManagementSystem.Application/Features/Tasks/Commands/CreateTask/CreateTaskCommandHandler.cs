@@ -52,6 +52,14 @@ namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Commands.Cre
                 CreatedByUserId = _currentUserService.UserId
             };
 
+            foreach (var userId in request.AssignedUserIds.Distinct())
+            {
+                taskItem.Assignments.Add(new TaskAssignment
+                {
+                    UserId = userId
+                });
+            }
+
             await _taskRepository.AddAsync(taskItem, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -16,5 +16,6 @@ namespace EnterpriseWorkManagementSystem.Domain.Entities
         public string? CreatedByUserId { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
+        public ICollection<TaskAssignment> Assignments { get; set; } = new List<TaskAssignment>();
     }
 }

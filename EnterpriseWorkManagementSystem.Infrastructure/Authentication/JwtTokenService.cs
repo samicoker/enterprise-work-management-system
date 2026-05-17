@@ -65,5 +65,13 @@ namespace EnterpriseWorkManagementSystem.Infrastructure.Authentication
 
             return Convert.ToBase64String(randomBytes);
         }
+
+        public string HashToken(string token)
+        {
+            var bytes = Encoding.UTF8.GetBytes(token);
+            var hashBytes = SHA256.HashData(bytes);
+
+            return Convert.ToBase64String(hashBytes);
+        }
     }
 }

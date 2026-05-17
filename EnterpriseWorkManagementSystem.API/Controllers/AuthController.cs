@@ -85,7 +85,7 @@ namespace EnterpriseWorkManagementSystem.API.Controllers
 
             var refreshTokenEntity = new RefreshToken
             {
-                Token = refreshToken,
+                Token = _tokenService.HashToken(refreshToken),
                 UserId = user.Id,
                 ExpiresAt = DateTime.UtcNow.AddDays(7),
                 IsRevoked = false
@@ -110,9 +110,11 @@ namespace EnterpriseWorkManagementSystem.API.Controllers
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken(RefreshTokenRequest request, CancellationToken cancellationToken)
         {
+            var refreshTokenHash = _tokenService.HashToken(request.RefreshToken);
+
             var existingRefreshToken = await _context.RefreshTokens
                 .Include(x => x.User)
-                .FirstOrDefaultAsync(x => x.Token == request.RefreshToken, cancellationToken);
+                .FirstOrDefaultAsync(x => x.Token == refreshTokenHash, cancellationToken);
 
             if (existingRefreshToken is null)
                 return Unauthorized("Invalid refresh token.");
@@ -135,7 +137,7 @@ namespace EnterpriseWorkManagementSystem.API.Controllers
 
             var newRefreshTokenEntity = new RefreshToken
             {
-                Token = newRefreshToken,
+                Token =  _tokenService.HashToken(newRefreshToken),
                 UserId = user.Id,
                 ExpiresAt = DateTime.UtcNow.AddDays(7),
                 IsRevoked = false

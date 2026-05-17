@@ -10,5 +10,6 @@ namespace EnterpriseWorkManagementSystem.Application.Abstractions.Infrastructure
     {
         string CreateToken(string userId, string email, IList<string> roles);
         string CreateRefreshToken();
+        string HashToken(string token);
     }
 }

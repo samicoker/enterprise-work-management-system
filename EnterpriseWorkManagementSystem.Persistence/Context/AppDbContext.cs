@@ -19,6 +19,7 @@ namespace EnterpriseWorkManagementSystem.Persistence.Context
         public DbSet<TaskItem> Tasks => Set<TaskItem>();
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<TaskAssignment> TaskAssignments => Set<TaskAssignment>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

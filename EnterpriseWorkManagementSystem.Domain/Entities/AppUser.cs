@@ -11,5 +11,6 @@ namespace EnterpriseWorkManagementSystem.Domain.Entities
     {
         public string FullName { get; set; } = string.Empty;
         public ICollection<TaskAssignment> TaskAssignments { get; set; } = new List<TaskAssignment>();
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

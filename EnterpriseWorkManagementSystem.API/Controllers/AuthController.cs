@@ -157,5 +157,28 @@ namespace EnterpriseWorkManagementSystem.API.Controllers
                 Expiration = DateTime.UtcNow.AddMinutes(expirationMinutes)
             });
         }
+
+        [AllowAnonymous]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout(RefreshTokenRequest request, CancellationToken cancellationToken)
+        {
+            var refreshTokenHash = _tokenService.HashToken(request.RefreshToken);
+
+            var existingRefreshToken = await _context.RefreshTokens
+                .FirstOrDefaultAsync(x => x.Token == refreshTokenHash, cancellationToken);
+
+            if (existingRefreshToken is null)
+                return Ok("Logged out successfully.");
+
+            if (!existingRefreshToken.IsRevoked)
+            {
+                existingRefreshToken.IsRevoked = true;
+                existingRefreshToken.UpdatedDate = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync(cancellationToken);
+            }
+
+            return Ok("Logged out successfully.");
+        }
     }
 }

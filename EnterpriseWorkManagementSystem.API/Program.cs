@@ -89,6 +89,18 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("DeleteTaskPolicy", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+    options.AddPolicy("UpdateTaskPolicy", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

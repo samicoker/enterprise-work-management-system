@@ -83,7 +83,7 @@ namespace EnterpriseWorkManagementSystem.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "DeleteTaskPolicy")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new DeleteTaskCommand { Id = id }, cancellationToken);
@@ -92,7 +92,7 @@ namespace EnterpriseWorkManagementSystem.API.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "UpdateTaskPolicy")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateTaskCommand command, CancellationToken cancellationToken)
         {
             command.Id = id;

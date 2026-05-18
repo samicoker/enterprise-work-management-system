@@ -64,6 +64,12 @@ namespace EnterpriseWorkManagementSystem.Application.Features.Tasks.Queries.GetA
                 request.PageSize,
                 userId,
                 isAdmin,
+                request.Search,
+                request.Status,
+                request.Priority,
+                request.CategoryId,
+                request.SortBy,
+                request.SortDirection,
                 cancellationToken);
 
             var taskDtos = _mapper.Map<IReadOnlyList<TaskDto>>(items);

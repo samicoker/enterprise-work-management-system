@@ -37,14 +37,26 @@ namespace EnterpriseWorkManagementSystem.API.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetAll(
-    [FromQuery] int pageNumber = 1,
-    [FromQuery] int pageSize = 10,
-    CancellationToken cancellationToken = default)
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? search = null,
+            [FromQuery] int? status = null,
+            [FromQuery] int? priority = null,
+            [FromQuery] int? categoryId = null,
+            [FromQuery] string? sortBy = null,
+            [FromQuery] string? sortDirection = null,
+            CancellationToken cancellationToken = default)
         {
             var query = new GetAllTasksQuery
             {
                 PageNumber = pageNumber,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Search = search,
+                Status = status,
+                Priority = priority,
+                CategoryId = categoryId,
+                SortBy = sortBy,
+                SortDirection = sortDirection
             };
 
             var result = await _mediator.Send(query, cancellationToken);
